@@ -10,7 +10,8 @@ const INITIAL_STATE: (0 | 1 | null)[][] = [
 
 export const TatetiComponent = () => {
   const winnerNumbers = [
-    273, 7, 56, 448, 84, 73, 146, 292, 210, 15, 281, 302, 201, 205, 203, 307,
+    273, 7, 56, 448, 84, 73, 135, 146, 292, 210, 15, 281, 302, 201, 205, 203,
+    307, 39, 263, 420, 464, 294, 428,
   ];
   const [matrix, setMatrix] = useState(INITIAL_STATE);
   const [currentPlayer, setCurrentPlayer] = useState<0 | 1>(0);
@@ -32,7 +33,7 @@ export const TatetiComponent = () => {
       });
     });
     let matrixNumber = parseInt(binaryState.join(""), 2);
-    /*     console.log(matrixNumber); */
+    console.log(matrixNumber);
     if (winnerNumbers.includes(matrixNumber)) {
       setWinner(currentPlayer);
     } else {
