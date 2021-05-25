@@ -10,8 +10,8 @@ const INITIAL_STATE: (0 | 1 | null)[][] = [
 
 export const TatetiComponent = () => {
   const winnerNumbers = [
-    273, 7, 56, 448, 84, 73, 135, 146, 292, 210, 15, 281, 302, 201, 205, 203,
-    307, 39, 263, 420, 464, 294, 428,
+    273, 7, 56, 448, 84, 73, 337, 135, 146, 147, 150, 292, 210, 15, 281, 302,
+    201, 205, 203, 307, 39, 263, 420, 464, 294, 428, 402, 409, 89, 86, 329,
   ];
   const [matrix, setMatrix] = useState(INITIAL_STATE);
   const [currentPlayer, setCurrentPlayer] = useState<0 | 1>(0);
