@@ -2,54 +2,29 @@ import { useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import styles from "./styles.module.css";
 
-const INITIAL_STATE = [
-  ["", "", ""],
-  ["", "", ""],
-  ["", "", ""],
+const INITIAL_STATE: (0 | 1 | null)[][] = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
 ];
 
 export const TatetiComponent = () => {
   const winnerNumbers = [
-    273,
-    7,
-    56,
-    448,
-    84,
-    73,
-    146,
-    292,
-    210,
-    15,
-    281,
-    302,
-    201,
-    205,
-    203,
-    307,
+    273, 7, 56, 448, 84, 73, 146, 292, 210, 15, 281, 302, 201, 205, 203, 307,
   ];
   const [matrix, setMatrix] = useState(INITIAL_STATE);
-  const [currentPlayer, setCurrentPlayer] = useState(0);
+  const [currentPlayer, setCurrentPlayer] = useState<0 | 1>(0);
   const [winner, setWinner] = useState<any>(null);
   const [movesCount, setMovesCount] = useState<number>(0);
 
-  const getmatrixState = (row: any, col: any) => {
-    let symbol = "";
-    switch (matrix[row][col]) {
-      case "0":
-        symbol = "X";
-        break;
-      case "1":
-        symbol = "0";
-        break;
-      default:
-        symbol = "";
-        break;
-    }
-    return symbol;
+  const getmatrixState = (row: number, col: number) => {
+    const player: 0 | 1 | null = matrix[row][col];
+    const sym = { 0: "X", 1: "0" };
+    return player !== null ? sym[player] : "";
   };
 
   const checkForWinner = () => {
-    let valueToCount = currentPlayer.toString();
+    let valueToCount = currentPlayer;
     let binaryState: number[] = [];
     matrix.forEach((row) => {
       row.forEach((colValue) => {
@@ -66,9 +41,9 @@ export const TatetiComponent = () => {
   };
 
   const setmatrixState = (row: number, col: number) => {
-    if (matrix[row][col] === "" && winner === null && movesCount <= 9) {
+    if (matrix[row][col] === null && winner === null && movesCount <= 9) {
       let newMatrix = [...matrix];
-      newMatrix[row][col] = currentPlayer.toString();
+      newMatrix[row][col] = currentPlayer;
       setMatrix(newMatrix);
       setMovesCount(movesCount + 1);
       checkForWinner();
@@ -77,9 +52,9 @@ export const TatetiComponent = () => {
 
   const handleResetGame = () => {
     setMatrix([
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""],
+      [null, null, null],
+      [null, null, null],
+      [null, null, null],
     ]);
     setWinner(null);
     setCurrentPlayer(0);
@@ -99,7 +74,7 @@ export const TatetiComponent = () => {
       {matrix.map((row, rowI) => {
         return (
           <Row key={rowI} className={styles.tateti_row}>
-            {row.map((col, colI) => {
+            {row.map((_, colI) => {
               return (
                 <Col
                   className={styles.tateti_col}
