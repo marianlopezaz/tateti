@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button, Col, Row } from "react-bootstrap";
 import { newMovement, resetGame, startNewGame } from "../utils/api";
+import GameResult from "./GameResult";
 import styles from "./styles.module.css";
 
 export const Tateti = () => {
@@ -9,10 +10,12 @@ export const Tateti = () => {
   const [currentPlayer, setCurrentPlayer] = useState<number | null>(null);
   const [player1, setPlayer1] = useState<number | null>(null);
   const [player2, setPlayer2] = useState<number | null>(null);
+  const [winner, setWinner] = useState<0 | 1 | null | 9>(null);
 
   const handleResetGame = () => {
     resetGame(gameId).then((res) => {
       setMatrix([[]]);
+      setWinner(null);
     });
   };
 
@@ -32,6 +35,7 @@ export const Tateti = () => {
       if (res.board) {
         setMatrix(res.board);
         setCurrentPlayer(currentPlayer === 0 ? player2 : player1);
+        setWinner(res.winner);
       }
     });
   };
@@ -54,31 +58,34 @@ export const Tateti = () => {
           Comenzar juego nuevo
         </Button>
       ) : (
-        matrix.map((row, rowI) => {
-          return (
-            <Row key={rowI} className={styles.tateti_row}>
-              {row.map((_, colI) => {
-                return (
-                  <Col
-                    className={styles.tateti_col}
-                    key={colI + "col"}
-                    onClick={() => {
-                      handleNewMovement(rowI, colI);
-                    }}
-                  >
-                    {getmatrixState(rowI, colI)}
-                  </Col>
-                );
-              })}
-            </Row>
-          );
-        })
+        <>
+          <GameResult result={winner} currentPlayer={currentPlayer} />
+          {matrix.map((row, rowI) => {
+            return (
+              <Row key={rowI} className={styles.tateti_row}>
+                {row.map((_, colI) => {
+                  return (
+                    <Col
+                      className={styles.tateti_col}
+                      key={colI + "col"}
+                      onClick={() => {
+                        handleNewMovement(rowI, colI);
+                      }}
+                    >
+                      {getmatrixState(rowI, colI)}
+                    </Col>
+                  );
+                })}
+              </Row>
+            );
+          })}
+        </>
       )}
-      {/*  {
+      {winner != null && (
         <button className={styles.reset_button} onClick={handleResetGame}>
           Volver a jugar
         </button>
-      } */}
+      )}
     </>
   );
 };

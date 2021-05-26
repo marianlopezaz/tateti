@@ -6,7 +6,6 @@ export const startNewGame = async () => {
 };
 
 export const resetGame = async (gameId: number | null) => {
-  console.log(typeof gameId);
   return await axios.delete(`${API_URL}/${gameId}`);
 };
 
