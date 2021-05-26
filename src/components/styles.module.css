@@ -23,11 +23,25 @@
   padding: 10px;
   border-radius: 10px;
   font-size: 18px;
-  transition: .3s all;
+  transition: 0.3s all;
 }
 
-.reset_button:hover{
+.reset_button:hover {
   background-color: #2b3035;
   cursor: pointer;
   color: white;
+}
+
+.button {
+  background-color: #486c90;
+  border: none;
+  outline: none;
+  transition: all 0.2s;
+}
+.button:hover,
+.button:active,
+.button:focus {
+  box-shadow: none !important;
+  background-color: #2f4154 !important;
+  transform: scale(1.05);
 }
