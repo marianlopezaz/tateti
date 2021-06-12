@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_URL } from "./config";
 
 export const startNewGame = async () => {
-  return (await axios.post(API_URL)).data.game;
+  return (await axios.post(API_URL)).data;
 };
 
 export const resetGame = async (gameId: number | null) => {
@@ -23,6 +23,14 @@ export const newMovement = async ({
       gameId,
       playerId,
       movement,
+    })
+  ).data;
+};
+
+export const getGameState = async (gameId: number | null) => {
+  return (
+    await axios.post(`${API_URL}/getGameState`, {
+      gameId,
     })
   ).data;
 };

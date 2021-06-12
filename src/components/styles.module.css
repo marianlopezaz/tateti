@@ -45,3 +45,7 @@
   background-color: #2f4154 !important;
   transform: scale(1.05);
 }
+
+.game_result {
+  margin-bottom: 20px;
+}

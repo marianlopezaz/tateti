@@ -1,22 +1,25 @@
-import { useState } from "react";
-import { Button, Col, Row } from "react-bootstrap";
-import { newMovement, resetGame, startNewGame } from "../utils/api";
+import { useEffect, useState } from "react";
+import { Col, Row } from "react-bootstrap";
+import {
+  getGameState,
+  newMovement,
+  resetGame,
+  startNewGame,
+} from "../utils/api";
 import GameResult from "./GameResult";
 import styles from "./styles.module.css";
 
-export const Tateti = () => {
+export const Tateti = ({ resetGame }: { resetGame: any }) => {
   const [matrix, setMatrix] = useState<(0 | 1 | null)[][]>([[]]);
-  const [gameId, setGameId] = useState(null);
+  const [gameId, setGameId] = useState<number | null>(null);
   const [currentPlayer, setCurrentPlayer] = useState<number | null>(null);
-  const [player1, setPlayer1] = useState<number | null>(null);
+  const [playerId, setPlayerId] = useState<number | null>(null);
   const [player2, setPlayer2] = useState<number | null>(null);
   const [winner, setWinner] = useState<0 | 1 | null | 9>(null);
 
   const handleResetGame = () => {
-    resetGame(gameId).then((res) => {
-      setMatrix([[]]);
-      setWinner(null);
-    });
+    void resetGame(gameId);
+    resetGame();
   };
 
   const getmatrixState = (row: number, col: number) => {
@@ -27,37 +30,44 @@ export const Tateti = () => {
 
   const handleNewMovement = (row: any, col: any) => {
     const data = {
-      playerId: currentPlayer,
+      playerId: playerId,
       movement: [row, col],
       gameId: gameId,
     };
-    newMovement({ ...data }).then((res) => {
-      if (res.board) {
-        setMatrix(res.board);
-        setCurrentPlayer(currentPlayer === 0 ? player2 : player1);
-        setWinner(res.winner);
-      }
-    });
+    newMovement({ ...data });
   };
 
-  const startGame = () => {
+  useEffect(() => {
     startNewGame().then((res: any) => {
-      const { id, board, player_id1, player_id2 } = res;
+      const { id, board, currentPlayer } = res.game;
       setMatrix(JSON.parse(board));
       setGameId(id);
-      setCurrentPlayer(parseInt(player_id1));
-      setPlayer1(parseInt(player_id1));
-      setPlayer2(parseInt(player_id2));
+      setCurrentPlayer(parseInt(currentPlayer));
+      console.log(res.playerID);
+      setPlayerId(parseInt(res.playerID));
     });
-  };
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (gameId) {
+        getGameState(gameId).then((result) => {
+          const { board, currentPlayer, player_id2 } = result.game;
+          if (!player2) {
+            setPlayer2(parseInt(player_id2));
+          }
+          setMatrix(JSON.parse(board));
+          setCurrentPlayer(parseInt(currentPlayer));
+          setWinner(result.winner);
+        });
+      }
+    }, 100);
+    return () => console.log("cerrando intervalo", interval);
+  }, [gameId]);
 
   return (
     <>
-      {matrix.length === 1 ? (
-        <Button className={styles.button} onClick={startGame}>
-          Comenzar juego nuevo
-        </Button>
-      ) : (
+      {player2 ? (
         <>
           <GameResult result={winner} currentPlayer={currentPlayer} />
           {matrix.map((row, rowI) => {
@@ -80,7 +90,10 @@ export const Tateti = () => {
             );
           })}
         </>
+      ) : (
+        "Esperando a un jugador"
       )}
+
       {winner != null && (
         <button className={styles.reset_button} onClick={handleResetGame}>
           Volver a jugar
